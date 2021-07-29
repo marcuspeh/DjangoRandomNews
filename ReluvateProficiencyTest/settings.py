@@ -29,7 +29,7 @@ DEBUG = True
 # Set default login page
 LOGIN_URL = 'login'
 
-ALLOWED_HOSTS = ['django-random-news.herokuapp.com']
+ALLOWED_HOSTS = ['django-random-news.herokuapp.com', '127.0.0.1']
 
 # Needed for model of User
 AUTH_USER_MODEL = 'website.User'
@@ -82,11 +82,14 @@ WSGI_APPLICATION = 'ReluvateProficiencyTest.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'dcpvplnh55tjsk',
+        'HOST': "ec2-54-173-31-84.compute-1.amazonaws.com",
+        'PORT': "5432",
+        'USER': os.environ["USER"],
+        'PASSWORD': os.environ["PASSWORD"]
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
