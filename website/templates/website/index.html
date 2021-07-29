@@ -1,0 +1,56 @@
+{% extends "website/layout.html" %}
+
+{% block body %}
+<div class="align-middle" style="height: 90vh;">
+    {% if not user.is_authenticated %}
+        <div class="text-center" style="margin-top: 30%;">
+            <h1>Reluvate Proficiency Test</h1>
+            <p>Done by Marcus Peh</p>
+            <div>
+                <a class="btn btn-secondary btn-lg" role="button" href="{% url 'register' %}">Register</a>
+                <a class="btn btn-outline-secondary btn-lg" role="button" href="{% url 'login' %}">Login</a>
+            </div>
+        </div>
+
+    {% else %} 
+        <h3>Click here to generate a random news</h3>
+        <form action="{% url 'getNews' %}" method="post">
+            {% csrf_token %}
+            <label for="category">Category </label>
+            <select id="category" name="category">
+                <option value="random">-</option>
+                <option value="general">General</option>
+                <option value="business">Business</option>
+                <option value="technology">Technology</option>
+                <option value="health">Health</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="science">Science</option>
+                <option value="sports">Sports</option>
+              </select>
+              <button class="btn btn-outline-secondary" style="display: block;" type="submit">Generate News</button>
+          </form>
+        
+
+        <hr>
+        <h3>News viewed in the past</h3>
+        {% if history %} 
+            {% for past in history %}
+                <div class="align-middle mb-2">
+                    <div class="card" style="width: 100%;">
+                        <img class="card-img-top" src={{ past.image }} alt="News Image">
+                        <div class="card-body">
+                            <small>By {{ past.author }} at {{ past.date }}</small>
+                            <h5 class="card-title">{{ past.title }}</h5>
+                            <p class="card-text">{{ past.description }}</p>
+                            <small><a href={{ past.url }} target="blank">Read more...</a></small>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No news is viewed :(</p>
+        {% endif %}
+    {% endif %}
+</div>
+
+{% endblock %}

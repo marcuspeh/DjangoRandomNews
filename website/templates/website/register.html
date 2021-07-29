@@ -1,0 +1,35 @@
+{% extends "website/layout.html" %}
+
+{% block body %}
+    {% if errorMessage %} 
+        <div class="alert alert-danger" role="alert">
+            {{errorMessage}}
+        </div>
+    {% endif %}
+    <h3>
+        Register
+    </h3>
+    <small class="form-text text-muted">Already have an account? Login <a href="{% url 'login' %}">here</a>.</small>
+    <br>
+    <form action="{% url 'register' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="inputUsername">Username</label>
+            <input type="text" class="form-control" name="inputUsername" id="inputUsername">
+        </div>
+        <div class="form-group">
+            <label for="inputEmail">Email address</label>
+            <input type="email" class="form-control" name="inputEmail" id="inputEmail" aria-describedby="emailHelp">
+        </div>
+        <div class="form-group">
+            <label for="inputPassword">Password</label>
+            <input type="password" class="form-control" name="inputPassword" id="inputPassword">
+        </div>
+        <div class="form-group">
+            <label for="inputPassword2">Password</label>
+            <input type="password" class="form-control" name="inputPassword2" id="inputPassword2">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+{% endblock %}
