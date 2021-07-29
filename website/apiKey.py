@@ -1,1 +1,1 @@
-key = "YOUR_API_KEY_GOES_HERE"
+key = "88471b91d70b4b09ab2d8519120ee5a0"
