@@ -7,6 +7,8 @@ newsapi-python
 Django
 ```
 
+2. Obtain a api key from https://newsapi.org/ and place it into apiKey.py in 'website' app
+
 2. Make migration for the website app
 ```
 python manage.py makemigrations website
