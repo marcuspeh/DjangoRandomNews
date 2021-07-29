@@ -29,7 +29,7 @@ DEBUG = True
 # Set default login page
 LOGIN_URL = 'login'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['django-random-news.herokuapp.com']
 
 # Needed for model of User
 AUTH_USER_MODEL = 'website.User'
