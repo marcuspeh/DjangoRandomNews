@@ -11,6 +11,7 @@
     </h3>
     <small class="form-text text-muted">Already have an account? Login <a href="{% url 'login' %}">here</a>.</small>
     <br>
+    <!-- Register form -->
     <form action="{% url 'register' %}" method="post">
         {% csrf_token %}
         <div class="form-group">

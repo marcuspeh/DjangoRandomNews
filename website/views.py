@@ -4,14 +4,14 @@ from .models import User, History
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 
 from newsapi import NewsApiClient
 
 from random import choice, randint
 from django.http.response import HttpResponse
 import os
-
-key = os.environ["apiKey"]
+from .apiKey import key
 
 API = NewsApiClient(api_key=key)
 SOURCES = ['abc-news', 'abc-news-au', 'al-jazeera-english', 'ars-technica', 'associated-press', 'australian-financial-review', 'axios', 'bbc-news', 'bbc-sport', 'bleacher-report', 'bloomberg', 'breitbart-news', 'business-insider', 'business-insider-uk', 'buzzfeed', 'cbc-news', 'cbs-news', 'cnn', 'crypto-coins-news', 'engadget', 'entertainment-weekly', 'espn', 'espn-cric-info', 'financial-post', 'football-italia', 'fortune', 'four-four-two', 'fox-news', 'fox-sports', 'google-news', 'google-news-au', 'google-news-ca', 'google-news-in', 'google-news-uk', 'hacker-news', 'ign', 'independent', 'mashable', 'medical-news-today', 'msnbc', 'mtv-news', 'mtv-news-uk', 'national-geographic', 'national-review', 'nbc-news', 'news24', 'new-scientist', 'news-com-au', 'newsweek', 'new-york-magazine', 'next-big-future', 'nfl-news', 'nhl-news', 'politico', 'polygon', 'recode', 'reddit-r-all', 'reuters', 'rte', 'talksport', 'techcrunch', 'techradar', 'the-american-conservative', 'the-globe-and-mail', 'the-hill', 'the-hindu', 'the-huffington-post', 'the-irish-times', 'the-jerusalem-post', 'the-lad-bible', 'the-next-web', 'the-sport-bible', 'the-times-of-india', 'the-verge', 'the-wall-street-journal', 'the-washington-post', 'the-washington-times', 'time', 'usa-today', 'vice-news', 'wired']
@@ -21,10 +21,17 @@ def indexView(request):
     # if user is authenticated, search for news viewed in the past
     if (request.user.is_authenticated):
         history = History.objects.filter(user=request.user).order_by('-time')
+        paginator = Paginator(history, 10)
+        if request.GET.get("page") != None:
+            try:
+                history = paginator.page(request.GET.get("page"))
+            except:
+                history = paginator.page(1)
+        else:
+            history = paginator.page(1)
     else:
         history = None
     return render(request, "website/index.html", {"history": history})
-
 @login_required
 def getNews(request):
     # if generate news button in home page is clicked
