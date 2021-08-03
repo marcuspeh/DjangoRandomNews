@@ -1,11 +1,11 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from .models import User, History
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
-
 from newsapi import NewsApiClient
 
 from random import choice, randint
@@ -32,6 +32,8 @@ def indexView(request):
     else:
         history = None
     return render(request, "website/index.html", {"history": history})
+
+@csrf_exempt
 @login_required
 def getNews(request):
     # if generate news button in home page is clicked
@@ -43,36 +45,37 @@ def getNews(request):
             news = API.get_top_headlines(sources=choice(SOURCES), language='en')
         else:
             news = API.get_top_headlines(category=category, language='en')
-    else:
-        # if getnews url is typed in directly
-        news = API.get_top_headlines(sources=choice(SOURCES), language='en')
     
-    # in case the newsAPI did not return any news
-    if (len(news['articles']) == 0):
-        return render(request, "website/news.html")
+        # catch if newsAPI returned news
+        try:
+            # Select a random news from the 20 returned by the API
+            index = randint(0, len(news['articles']) - 1)
 
-    # Select a random news from the 20 returned by the API
-    index = randint(0, len(news['articles']) - 1)
+            # Saved the news selected so that the user can view history
+            obj = History()
+            obj.user = request.user
+            obj.title = news['articles'][index]['title'] or ""
+            obj.description = news['articles'][index]['description'] or ""
+            obj.date = news['articles'][index]['publishedAt'].split('T')[0] or ""
+            obj.author = news['articles'][index]['author'] or ""
+            obj.image = news['articles'][index]['urlToImage'] or ""
+            obj.url = news['articles'][index]['url'] or ""
+            obj.save()
 
-    # Saved the news selected so that the user can view history
-    obj = History()
-    obj.user = request.user
-    obj.title = news['articles'][index]['title'] or ""
-    obj.description = news['articles'][index]['description'] or ""
-    obj.date = news['articles'][index]['publishedAt'].split('T')[0] or ""
-    obj.author = news['articles'][index]['author'] or ""
-    obj.image = news['articles'][index]['urlToImage'] or ""
-    obj.url = news['articles'][index]['url'] or ""
-    obj.save()
-
-    return render(request, "website/news.html", {
-        'title': obj.title,
-        'description': obj.description,
-        'date': obj.date,
-        'author': obj.author,
-        'image': obj.image,
-        'url': obj.url
-    })
+            # Post the response for the javascript to put into the html
+            context = {
+                'title': obj.title,
+                'description': obj.description,
+                'date': obj.date,
+                'author': obj.author,
+                'image': obj.image,
+                'url': obj.url,
+                'status': 201
+            }
+            return JsonResponse(context, status=201)
+        except:
+            return JsonResponse({'status': 400}, status=400)
+    return JsonResponse({'status': 404}, status=404)
 
 
 def loginView(request):
