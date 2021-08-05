@@ -62,7 +62,9 @@ function generateNews(e) {
                 `</div></div></div>` +
                 allPost.innerHTML;
             }
-            document.querySelector(`#delete${res.id}`).addEventListener("click", () => deleteHistory(res.id));
+            document.querySelectorAll('.deleteNews').forEach((e) => {
+                e.addEventListener("click", () => deleteHistory(e.getAttribute("data-id")));
+            })
         } else {
             modalBody.innerHTML = "<p>Ops we can't find any news. Please try again.</p>"
         }
