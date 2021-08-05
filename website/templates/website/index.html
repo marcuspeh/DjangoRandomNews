@@ -15,6 +15,10 @@
 
     {% else %} 
 
+        <!-- Welcome message-->
+        <h3>Welcome, {{user.username}}</h3>
+        <hr>
+
         <!-- Generate news -->
         <h3>Click here to generate a random news</h3>
         <div>
@@ -40,7 +44,7 @@
         <div id="allPost">
             {% if history %} 
                 {% for past in history %}
-                    <div class="align-middle mb-2">
+                    <div class="align-middle mb-2" id="post{{ past.id }}">
                         <div class="card" style="width: 100%;">
                             <img class="card-img-top" src={{ past.image }} alt="News Image">
                             <div class="card-body">
@@ -48,6 +52,9 @@
                                 <h5 class="card-title">{{ past.title }}</h5>
                                 <p class="card-text">{{ past.description }}</p>
                                 <small><a href={{ past.url }} target="blank">Read more...</a></small>
+                                <button class="btn btn-outline-warning deleteNews" style="float: right;" data-id={{ past.id }}>
+                                    <i class="fas fa-trash"></i>
+                                </button>
                             </div>
                         </div>
                     </div>

@@ -157,3 +157,18 @@ def logoutView(request):
     except:
         pass
     return HttpResponseRedirect(reverse("index"))
+
+@csrf_exempt
+@login_required
+def deleteNews(request):
+    # if delete button is clicked
+    if request.method == "POST":
+        # getting the id of the history to be deleted
+        id = request.POST["id"]
+        try:
+            post = History.objects.filter(id=id).delete()
+            return JsonResponse({'status': 201}, status=201)
+        except:
+            return JsonResponse({'status': 400}, status=400)
+    else:
+        return JsonResponse({}, status=404)
