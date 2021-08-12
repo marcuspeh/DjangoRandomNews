@@ -1,1 +1,1 @@
-key = "INSERT_KEY_HERE"
+key = os.environ["apiKey"]
