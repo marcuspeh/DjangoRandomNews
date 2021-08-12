@@ -83,6 +83,9 @@ function resetNews(e) {
 }
 
 function deleteHistory(historyID) {
+    // Hide news first
+    history = document.getElementById(`post${historyID}`).style.display = "none";
+
     // Post request
     form = new FormData();
     form.append("id", historyID);
@@ -93,7 +96,6 @@ function deleteHistory(historyID) {
     .then((res) => res.json())
     .then((res) => {
         if (res.status == 201) {
-            history = document.getElementById(`post${historyID}`).style.display = "none";
         } else {
             alert("Unable to delete. Please refresh page.");
         }

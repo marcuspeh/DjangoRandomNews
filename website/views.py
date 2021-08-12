@@ -2,15 +2,17 @@ from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from .models import User, History
 from django.http import HttpResponseRedirect, JsonResponse
+from django.http.response import HttpResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
+
 from newsapi import NewsApiClient
 
 from random import choice, randint
-from django.http.response import HttpResponse
 import os
+
 from .apiKey import key
 
 API = NewsApiClient(api_key=key)
@@ -58,7 +60,7 @@ def getNews(request):
             obj.description = news['articles'][index]['description'] or ""
             obj.date = news['articles'][index]['publishedAt'].split('T')[0] or ""
             obj.author = news['articles'][index]['author'] or ""
-            obj.image = news['articles'][index]['urlToImage'] or ""
+            obj.image = news['articles'][index]['urlToImage'] or "https://github.com/marcuspeh/Markeet/blob/main/submissions/unknown.png?raw=true"
             obj.url = news['articles'][index]['url'] or ""
             obj.save()
 
@@ -70,12 +72,13 @@ def getNews(request):
                 'author': obj.author,
                 'image': obj.image,
                 'url': obj.url,
+                'id': obj.id,
                 'status': 201
             }
             return JsonResponse(context, status=201)
         except:
             return JsonResponse({'status': 400}, status=400)
-    return JsonResponse({'status': 404}, status=404)
+    return JsonResponse({}, status=404)
 
 
 def loginView(request):
