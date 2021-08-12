@@ -1,1 +1,1 @@
-web: gunicorn ReluvateProficiencyTest.wsgi
+web: gunicorn RandomNews.wsgi
